@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+
+
+#search-btn{
+    margin-left: auto;
+    margin-right: auto;
+}
+        #container{
+            
+      border: 1px solid rgb(66, 66, 66);
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      column-gap: 15px;
+      row-gap: 15px;
+      padding: 5px;
+      justify-items: center;
+      
+        }
+
+        #container>.items{
+            width: 90%;
+            
+            min-width: 200px;
+            border: 1px solid rgb(213, 213, 213);
+            box-shadow: 6px 7px 6px rgb(230, 229, 229),inset 5px 0px 4px rgb(231, 231, 231);
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+             font-weight: 600;
+             font-size: 1.5em;
+             border-radius: 10px;
+             
+        }
+
+        #container>.items>img{
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            
+        }
+        
+        #container >.items >center >button{
+            
+          width: 200px;
+          height: 38px;
+           border-radius: 10px;
+           border: none;
+           background-color: orange;
+           color: white;  
+           margin-bottom: 50px
+        }
+
+        .search-btn{
+            width: 200px;
+          height: 38px;
+           border-radius: 10px;
+           border: none;
+           background-color: orange;
+           color: white;  
+           margin-bottom: 50px;
+}
+ 
+    </style>
+</head>
+<body>
+    <h1 class="meal">Find meals for your ingredients</h1>
+
+    <div id="search-btn">
+
+        <input type="text" placeholder="Enter your item" id="text">
+        <button type="button" id="btn" class="search-btn">search</button>
+
+    </div>
+    <div id="container">
+
+     <div id="1" class="items">
+        <img src="" alt="">
+
+        <p></p>
+
+        <center><button id="btnn"></button></center>
+     </div>
+    </div>
+
+    <script>
+       var input=document.getElementById("text").value.trim();
+
+     let html="";
+     var mealList=document.getElementById("container");
+     let c=document.getElementById("btn");
+   
+     c.addEventListener('click',fun);
+
+
+  
+
+     function fun()
+    {
+       fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${input}`)
+       .then(response=>response.json())
+       .then(data=>
+       {
+           
+            if(data.meals)
+            {
+                data.meals.forEach(meal => 
+                {
+                    
+                
+                    html+= `
+                    <div data-id="${meal.idMeal}" class="items" >
+                          <img src="${meal.strMealThumb}" alt="" height="150px" width="200px">
+                          <p>${meal.strMeal}</p>
+                        
+                           <button type="button" id="btnn" >Get recipie</button>
+
+                        
+                    </div> `;
+                    
+
+                });
+
+                mealList.classList.remove('notFound');
+        } 
+        
+        
+        
+        else
+                {
+                    html = "Sorry, we didn't find any meal!";
+                    mealList.classList.add('notFound');
+                }
+
+            
+
+
+                mealList.innerHTML = html;
+        });
+    }
+
+
+
+
+
+    const mealLi = document.getElementById('btnn');
+    mealLi.addEventListener('click', getMealRecipe);
+
+
+
+    function getMealRecipe(e){
+    e.preventDefault();
+    
+    let mealItem = e.target.parentElement;
+    console.log(mealItem);
+    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealItem.dataset.id}`)
+    .then(response => response.json())
+    .then(data => {
+        let meal=data.meals;
+        meal=meal[0];
+        document.write(`${meal.strInstructions}`);
+        });
+   
+
+}
+      
+ 
+   
+    
+
+
+  
+     
+     
+    </script>
+</body>
+</html>
